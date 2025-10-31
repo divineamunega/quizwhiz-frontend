@@ -28,6 +28,8 @@ const QuizFeed = () => {
     handleCloseModal,
     handlePlay,
     handleLoadMore,
+    isCreatingSoloSession,
+    soloSessionData,
   } = useQuizFeedState();
 
   // Fetch real quiz data

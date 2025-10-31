@@ -1,4 +1,6 @@
 import { useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCreateSoloSession } from '@/features/quiz/lobby/hooks';
 
 interface QuizFeedState {
   isCreateModalOpen: boolean;
@@ -48,6 +50,8 @@ const quizFeedReducer = (state: QuizFeedState, action: QuizFeedAction): QuizFeed
 
 export const useQuizFeedState = () => {
   const [state, dispatch] = useReducer(quizFeedReducer, initialState);
+  const navigate = useNavigate();
+  const { data, mutate, isError, isPending, isSuccess, error } = useCreateSoloSession();
 
   const handleCreateQuiz = () => {
     dispatch({ type: 'OPEN_CREATE_MODAL' });
@@ -80,7 +84,11 @@ export const useQuizFeedState = () => {
   const handlePlay = (quizId: string) => {
     console.log('Play quiz:', quizId);
     // Navigate to lobby page
-    window.location.href = '/lobby';
+
+    // Create Solo Session
+    mutate(quizId);
+
+    // navigate(`/lobby/${quizId}`);
   };
 
   const handleLoadMore = () => {
@@ -99,6 +107,11 @@ export const useQuizFeedState = () => {
     handleCloseModal,
     handlePlay,
     handleLoadMore,
+    isCreatingSoloSession: isPending,
+    isErrorCreatingSoloSession: isError,
+    soloSessionCreated: isSuccess,
+    soloSessionError: error,
+    soloSessionData: data,
   };
 };
 

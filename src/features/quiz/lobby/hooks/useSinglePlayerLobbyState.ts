@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { useReducer } from 'react';
 
 interface QuizAttempt {
@@ -117,6 +118,14 @@ const singlePlayerLobbyReducer = (
 
 export const useSinglePlayerLobbyState = () => {
   const [state, dispatch] = useReducer(singlePlayerLobbyReducer, initialState);
+
+  // an creatingSession is a state that indicates if the session is being created
+
+  // an isready state to track if the quiz is cached and ready to play false by default
+
+  // make the create session API Request
+
+  // if/when successfull create the Websocket request
 
   const handleToggleBookmark = () => {
     dispatch({ type: 'TOGGLE_BOOKMARK' });

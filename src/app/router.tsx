@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: 'lobby',
+        path: 'lobby/:id',
         element: <SinglePlayerLobby />,
       },
       {

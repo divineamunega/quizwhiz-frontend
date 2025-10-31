@@ -1,7 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
-import { Edit, Trash2, Plus, Users, Lock, Calendar, FileQuestion } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/common/components/ui/dropdown-menu';
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Users,
+  Lock,
+  Calendar,
+  FileQuestion,
+  MoreHorizontal,
+  Play,
+  Rocket,
+} from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 interface Quiz {
   id: string;
@@ -30,6 +49,8 @@ const QuizzesAllCard: React.FC<QuizzesAllCardProps> = ({
   handleDeleteQuiz,
   formatDate,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <Card key={quiz.id} className='hover:shadow-lg transition-shadow'>
       <CardHeader className='pb-3'>
@@ -62,30 +83,50 @@ const QuizzesAllCard: React.FC<QuizzesAllCardProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className='flex gap-2'>
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={() => handleEditQuiz(quiz.id)}
-              className='flex-1'
-            >
-              <Edit className='w-4 h-4 mr-1' />
-              Edit
-            </Button>
-
+          <div className='flex items-center gap-2'>
             <Button
               variant='default'
               size='sm'
-              onClick={() => handleAddQuestions(quiz.id)}
               className='flex-1'
+              onClick={() => navigate(`${quiz.id}/play`)}
             >
-              <Plus className='w-4 h-4 mr-1' />
-              Questions
+              <Play className='w-4 h-4 mr-1' />
+              Play Solo
             </Button>
-
-            <Button variant='destructive' size='sm' onClick={() => handleDeleteQuiz(quiz.id)}>
-              <Trash2 className='w-4 h-4' />
+            <Button
+              variant='outline'
+              size='sm'
+              className='flex-1'
+              onClick={() => navigate(`${quiz.id}/host`)}
+            >
+              <Rocket className='w-4 h-4 mr-1' />
+              Host
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='outline' size='icon'>
+                  <MoreHorizontal className='w-4 h-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem onClick={() => handleEditQuiz(quiz.id)}>
+                  <Edit className='w-4 h-4 mr-2' />
+                  Edit Quiz
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate(`${quiz.id}/add-question`)}>
+                  <Plus className='w-4 h-4 mr-2' />
+                  Add Questions
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => handleDeleteQuiz(quiz.id)}
+                  className='text-red-500'
+                >
+                  <Trash2 className='w-4 h-4 mr-2' />
+                  Delete Quiz
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardContent>

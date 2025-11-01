@@ -1,5 +1,9 @@
 import { Button } from '@/common/components/ui/button';
 import { Badge } from '@/common/components/ui/badge';
+import { useCreateSoloSession } from '@/features/quiz/lobby/hooks';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface Quiz {
   id: string;
@@ -26,6 +30,33 @@ const QuizFeedCard: React.FC<QuizFeedCardProps> = ({
   formatDate,
   getDifficultyColor,
 }) => {
+  const {
+    mutate: createSoloSession,
+    isPending: creatingSoloSession,
+    isError: isErrorCreatingSoloSession,
+    error: createSoloSessionError,
+    isSuccess: createdSoloSession,
+    data: soloSessionData,
+  } = useCreateSoloSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isErrorCreatingSoloSession && createSoloSessionError) {
+      console.error('Error creating solo session:', createSoloSessionError);
+      toast.error('Failed to start game. Please try again.');
+    }
+
+    if (createdSoloSession && soloSessionData?.status === 'success') {
+      // queryClient.setQueryData(['soloSession', soloSessionData?.data?.id], soloSessionData?.data);
+      navigate(`/lobby/${soloSessionData?.data?.id}`, { state: soloSessionData?.data });
+    }
+  }, [
+    isErrorCreatingSoloSession,
+    createSoloSessionError,
+    createdSoloSession,
+    soloSessionData?.status,
+  ]);
+
   return (
     <div className='quiz-card overflow-hidden'>
       <div className='h-40 bg-gray-200 relative'>
@@ -61,9 +92,12 @@ const QuizFeedCard: React.FC<QuizFeedCardProps> = ({
         <div className='mt-4'>
           <Button
             className='w-full bg-quiz-primary hover:bg-quiz-secondary'
-            onClick={() => onPlay(quiz.id)}
+            disabled={creatingSoloSession}
+            onClick={() => {
+              createSoloSession(quiz.id);
+            }}
           >
-            Play
+            {creatingSoloSession ? 'Starting Game...' : 'Play'}
           </Button>
         </div>
       </div>

@@ -1,5 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
-import { useReducer } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useReducer } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import { useSocket } from '@/hooks/useSocket';
 
 interface QuizAttempt {
   id: string;
@@ -118,9 +120,19 @@ const singlePlayerLobbyReducer = (
 
 export const useSinglePlayerLobbyState = () => {
   const [state, dispatch] = useReducer(singlePlayerLobbyReducer, initialState);
+  const { id } = useParams();
+  const { state: quizSessionData } = useLocation();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    socket.emit('message', {
+      type: 'quiz:isReady',
+      data: { quizId: quizSessionData?.quizId, sessionId: id },
+    });
+  }, [quizSessionData]);
 
   // an creatingSession is a state that indicates if the session is being created
-
+  // const { data } = useQuery({});
   // an isready state to track if the quiz is cached and ready to play false by default
 
   // make the create session API Request

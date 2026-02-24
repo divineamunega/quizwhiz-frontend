@@ -63,6 +63,7 @@
     "react-scan": "^0.4.3",
     "react-tilt": "^1.0.2",
     "recharts": "^2.12.7",
+    "socket.io-client": "^4.8.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
